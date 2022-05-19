@@ -1,7 +1,9 @@
 import { CreateUserService } from '@modules/user/services/CreateUserService';
 import { DeleteUserService } from '@modules/user/services/DeleteUserService';
+import { ListUserByIdService } from '@modules/user/services/ListUserByIdService';
 import { ListUserService } from '@modules/user/services/ListUserService';
 import { LoginUserService } from '@modules/user/services/LoginUserService';
+import { UpdateUserFavoriteProductsService } from '@modules/user/services/UpdateUserFavoriteProductsService';
 import { UpdateUserService } from '@modules/user/services/UpdateUserService';
 import { NextFunction, Request, Response } from 'express';
 import { container } from 'tsyringe';
@@ -16,6 +18,23 @@ export class UserController {
       res.status(201).json(await createUserService.execute(data));
     } catch (error: any) {
       res.status(500).json({ message: error.message });
+    }
+  }
+
+  async listById(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { id } = req.params;
+
+      const listUserByIdService = container.resolve(ListUserByIdService);
+      const user = await listUserByIdService.execute(Number(id));
+
+      res.status(200).json(user);
+    } catch (err) {
+      next(err);
     }
   }
 
@@ -63,6 +82,29 @@ export class UserController {
       res.status(200).json(await loginUserService.execute(email, password));
     } catch (error: any) {
       res.status(401).json({ message: error.message });
+    }
+  }
+
+  async updateFavoriteProducts(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { id } = req.params;
+      const data = req.body;
+
+      const updateUserFavoriteProductsService = container.resolve(
+        UpdateUserFavoriteProductsService
+      );
+
+      res
+        .status(200)
+        .json(
+          await updateUserFavoriteProductsService.execute(Number(id), data)
+        );
+    } catch (err) {
+      next(err);
     }
   }
 }

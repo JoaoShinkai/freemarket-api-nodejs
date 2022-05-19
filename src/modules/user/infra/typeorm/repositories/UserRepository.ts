@@ -22,7 +22,7 @@ export class UserRepository implements IUserRepository {
   }
 
   async findById(id: number): Promise<IUserDTO | undefined> {
-    return this.repository.findOne(id);
+    return this.repository.findOne(id, { relations: ['favorites'] });
   }
 
   async findByEmail(email: string): Promise<IUserDTO | undefined> {
@@ -31,6 +31,13 @@ export class UserRepository implements IUserRepository {
 
   async update(id: number, data: Partial<IUserDTO>): Promise<void> {
     await this.repository.update(id, data);
+  }
+
+  async updateWithRelations(
+    id: number,
+    data: Partial<IUserDTO>
+  ): Promise<void> {
+    await this.repository.save({ ...data, id: Number(id) });
   }
 
   async delete(id: number): Promise<void> {

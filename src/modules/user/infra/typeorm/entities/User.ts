@@ -1,7 +1,14 @@
 import { Product } from '@modules/product/infra/typeorm/entities/Product';
 import { IUserDTO } from '@modules/user/dtos/IUserDTO';
 import { DefaultEntity } from '@shared/infra/typeorm/entities/DefaultEntity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn
+} from 'typeorm';
 
 @Entity('user')
 export class User extends DefaultEntity implements IUserDTO {
@@ -49,4 +56,8 @@ export class User extends DefaultEntity implements IUserDTO {
 
   @OneToMany(() => Product, () => User)
   products: Product[];
+
+  @ManyToMany(() => Product)
+  @JoinTable()
+  favorites: Product[];
 }
