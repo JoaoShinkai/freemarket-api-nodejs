@@ -1,6 +1,7 @@
 import { CreateUserService } from '@modules/user/services/CreateUserService';
 import { DeleteUserService } from '@modules/user/services/DeleteUserService';
 import { ListUserByIdService } from '@modules/user/services/ListUserByIdService';
+import { ListUserFavoriteProductsService } from '@modules/user/services/ListUserFavoriteProductsService';
 import { ListUserService } from '@modules/user/services/ListUserService';
 import { LoginUserService } from '@modules/user/services/LoginUserService';
 import { UpdateUserFavoriteProductsService } from '@modules/user/services/UpdateUserFavoriteProductsService';
@@ -42,6 +43,25 @@ export class UserController {
     try {
       const listUserService = container.resolve(ListUserService);
       const users = await listUserService.execute();
+
+      res.status(200).json(users);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async listFavorites(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { id } = req.params;
+
+      const listUserFavoriteProductsService = container.resolve(
+        ListUserFavoriteProductsService
+      );
+      const users = await listUserFavoriteProductsService.execute(Number(id));
 
       res.status(200).json(users);
     } catch (err) {

@@ -20,6 +20,11 @@ userRoutes.post(
 
 userRoutes.get('/', userAuth, userController.list);
 userRoutes.get('/:id', userAuth, userController.listById);
+userRoutes.get(
+  '/:id/products/favorites',
+  userAuth,
+  userController.listFavorites
+);
 userRoutes.delete('/:id', userAuth, userController.delete);
 userRoutes.put(
   '/:id',

@@ -1,3 +1,4 @@
+import { IProductDTO } from '@modules/product/dtos/IProductDTO';
 import { IUserDTO } from '@modules/user/dtos/IUserDTO';
 import { User } from '@modules/user/infra/typeorm/entities/User';
 import { IUserRepository } from '@modules/user/repositories/IUserRepository';
@@ -27,6 +28,14 @@ export class UserRepository implements IUserRepository {
 
   async findByEmail(email: string): Promise<IUserDTO | undefined> {
     return this.repository.findOne({ email });
+  }
+
+  async findFavoriteProducts(id: number): Promise<IProductDTO[]> {
+    const res = await this.repository.findOne(id, { relations: ['favorites'] });
+    if (res) {
+      return res.favorites;
+    }
+    return [];
   }
 
   async update(id: number, data: Partial<IUserDTO>): Promise<void> {
